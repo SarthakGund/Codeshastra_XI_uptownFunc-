@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { useRouter, usePathname } from 'next/navigation';
-import { Home, BarChart2, Users, Settings, Menu, X } from 'lucide-react';
+import { Home, BarChart2, Users, Settings, Menu, X,  DollarSign} from 'lucide-react';
 
 interface SidebarProps {
   companyName: string;
@@ -17,6 +17,7 @@ const Sidebar: React.FC<SidebarProps> = ({ companyName, logoUrl }) => {
   const routes = [
     { name: 'Dashborad', path: '/', icon: <Home size={20} /> },
     { name: 'Products', path: '/products', icon: <BarChart2 size={20} /> },
+    { name: 'Pricing', path: '/pricing', icon: <DollarSign size={20} /> },
     { name: 'Customers', path: '/customers', icon: <Users size={20} /> },
     { name: 'Settings', path: '/settings', icon: <Settings size={20} /> },
   ];

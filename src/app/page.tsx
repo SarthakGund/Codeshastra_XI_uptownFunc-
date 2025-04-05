@@ -6,7 +6,7 @@ export default function Home() {
   return (
       // <Sidebar/>
       <div className="w-full h-full overflow-x-hidden">
-        <Hero/>
+        {/* <Hero/> */}
       </div>
   );
 }
