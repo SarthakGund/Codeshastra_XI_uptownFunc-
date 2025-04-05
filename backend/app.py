@@ -3,6 +3,8 @@ from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
 from routes.RandomPassNo_route import rpn_bp
 from routes.CsvExcelTools import cet_bp
+from routes.ImageGen_route import ig_bp
+
 
 app = Flask(__name__)
 CORS(app)
@@ -13,6 +15,9 @@ db = SQLAlchemy(app)
 
 app.register_blueprint(rpn_bp)
 app.register_blueprint(cet_bp)
+app.register_blueprint(ig_bp)
+
+
 
 @app.route('/api', methods=['GET'])
 def api():
