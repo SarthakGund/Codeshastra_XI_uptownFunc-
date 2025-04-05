@@ -14,9 +14,9 @@ def generate_uuid4():
     """UUID4: Random UUID (secure and most commonly used)."""
     return str(uuid.uuid4())
 
-if __name__ == "__main__":
-    start = int(input("Enter start of range: "))
-    end = int(input("Enter end of range: "))
-    print("Random number:", generate_random_number(start, end))
-    print("UUID1:", generate_uuid1())
-    print("UUID4:", generate_uuid4())
+# if __name__ == "__main__":
+#     start = int(input("Enter start of range: "))
+#     end = int(input("Enter end of range: "))
+#     print("Random number:", generate_random_number(start, end))
+#     print("UUID1:", generate_uuid1())
+#     print("UUID4:", generate_uuid4())
