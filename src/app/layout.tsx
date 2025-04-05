@@ -4,8 +4,8 @@ import "./globals.css";
 import { Button } from "@/components/ui/button"
 import {
   ClerkProvider,
-  // SignInButton,
-  // SignUpButton,
+  SignInButton,
+  SignUpButton,
   SignedIn,
   SignedOut,
   UserButton,
@@ -42,7 +42,7 @@ export default function RootLayout({
         <body
           className={`${geistSans.variable} ${geistMono.variable} antialiased`}
         >
-          <nav className='flex justify-between h-18 items-center bg-black text-white'>
+          <nav className='flex justify-between h-18 items-center bg-black text-white w-screen sticky'>
             <div className = 'flex mx-0 items-center'>
               {/* <div className ='flex items-center'>Logo</div> */}
               {/* <div className="text-3xl">UTILIX</div> */}
@@ -58,16 +58,28 @@ export default function RootLayout({
             <div className=''>
 
             <SignedOut>
-            <Button className="mx-3">
-              <Link href='/signup'>
-              Sign Up
-              </Link>
-            </Button>
-            <Button className='mx-3' >
-              <Link href='/signin'>
-              Sign In
-              </Link>
-            </Button>
+              <div className="flex items-center">
+
+              <div className="mx-3">
+                <SignInButton>
+                <button className="relative cursor-pointer inline-flex items-center justify-center p-0.5 mb-2 me-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-purple-600 to-blue-500 group-hover:from-purple-600 group-hover:to-blue-500 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800">
+                  <span className="relative px-5 py-2.5 transition-all ease-in duration-75 bg-black text-white  dark:bg-gray-900 rounded-md group-hover:bg-transparent group-hover:dark:bg-transparent">
+                  Sign In
+                  </span>
+                  </button>
+                </SignInButton>
+              </div>
+              <div className='mx-3' >
+
+                <SignUpButton>
+                <button className="relative  cursor-pointer inline-flex items-center justify-center p-0.5 mb-2 me-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-purple-600 to-blue-500 group-hover:from-purple-600 group-hover:to-blue-500 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800">
+                  <span className="relative px-5 py-2.5 transition-all ease-in duration-75 bg-black text-white dark:bg-gray-900 rounded-md group-hover:bg-transparent group-hover:dark:bg-transparent">
+                  Sign Up
+                  </span>
+                  </button>
+                </SignUpButton>
+              </div>
+                </div>
             </SignedOut>
 
             <SignedIn>
