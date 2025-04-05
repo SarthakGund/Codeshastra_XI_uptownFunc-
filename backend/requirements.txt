@@ -10,3 +10,6 @@ qrcode
 pillow
 pythonping
 dnspython
+pyyaml
+google-generativeai
+python-dotenv
