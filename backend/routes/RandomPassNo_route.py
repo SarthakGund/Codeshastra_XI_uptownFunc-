@@ -13,4 +13,4 @@ def random_pass():
     uuid0 = generate_random_number(start, end)
     uuid1 = generate_uuid1()
     uuid2 = generate_uuid4()
-    return jsonify({"random_number": uuid0, "uuid1": uuid1, "uuid2": uuid2})
+    return jsonify({"random_number": uuid0, "uuid1": uuid1, "uuid2": uuid2}), 200
