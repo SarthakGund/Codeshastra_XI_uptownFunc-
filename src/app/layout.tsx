@@ -39,62 +39,54 @@ export default function RootLayout({
   return (
     <ClerkProvider>
       <html lang="en">
-        <body
-          className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+      <body
+          className={`${geistSans.variable} ${geistMono.variable} antialiased bg-black text-white h-screen w-screen`}
         >
-          <nav className='flex justify-between h-18 items-center bg-black text-white w-screen sticky'>
-            <div className = 'flex mx-0 items-center'>
-              {/* <div className ='flex items-center'>Logo</div> */}
-              {/* <div className="text-3xl">UTILIX</div> */}
-              <Image
-                src="/assets/logo.svg" // path is relative to public/
-                alt="Company Logo"
-                width={250}
-                height={250}
-                className="rounded-full object-contain"
-              />
-            </div>
 
-            <div className=''>
+  <nav className="flex justify-between items-center bg-black text-white h-16 px-4 sticky top-0 z-50 border-b border-white/10">
+    <div className="flex items-center">
+      <Image
+        src="/assets/logo.svg"
+        alt="Company Logo"
+        width={200}
+        height={200}
+        className="object-contain"
+      />
+    </div>
+    <div className="flex items-center">
+      <SignedOut>
+        <div className="flex items-center gap-3">
+          <SignInButton>
+          <button className="relative  cursor-pointer inline-flex items-center justify-center p-0.5 mb-2 me-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-purple-600 to-blue-500 group-hover:from-purple-600 group-hover:to-blue-500 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800">
+          <span className="relative px-5 py-2.5 transition-all ease-in duration-75 bg-black text-white dark:bg-gray-900 rounded-md group-hover:bg-transparent group-hover:dark:bg-transparent">
+              Sign In
+              </span>
+            </button>
+          </SignInButton>
+          <SignUpButton>
+          <button className="relative  cursor-pointer inline-flex items-center justify-center p-0.5 mb-2 me-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-purple-600 to-blue-500 group-hover:from-purple-600 group-hover:to-blue-500 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800">
+          <span className="relative px-5 py-2.5 transition-all ease-in duration-75 bg-black text-white dark:bg-gray-900 rounded-md group-hover:bg-transparent group-hover:dark:bg-transparent">
+              Sign Up
+              </span>
+            </button>
+          </SignUpButton>
+        </div>
+      </SignedOut>
+      <SignedIn>
+        <div className="mr-4">
+          <UserButton />
+        </div>
+      </SignedIn>
+    </div>
+  </nav>
 
-            <SignedOut>
-              <div className="flex items-center">
-
-              <div className="mx-3">
-                <SignInButton>
-                <button className="relative cursor-pointer inline-flex items-center justify-center p-0.5 mb-2 me-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-purple-600 to-blue-500 group-hover:from-purple-600 group-hover:to-blue-500 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800">
-                  <span className="relative px-5 py-2.5 transition-all ease-in duration-75 bg-black text-white  dark:bg-gray-900 rounded-md group-hover:bg-transparent group-hover:dark:bg-transparent">
-                  Sign In
-                  </span>
-                  </button>
-                </SignInButton>
-              </div>
-              <div className='mx-3' >
-
-                <SignUpButton>
-                <button className="relative  cursor-pointer inline-flex items-center justify-center p-0.5 mb-2 me-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-purple-600 to-blue-500 group-hover:from-purple-600 group-hover:to-blue-500 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800">
-                  <span className="relative px-5 py-2.5 transition-all ease-in duration-75 bg-black text-white dark:bg-gray-900 rounded-md group-hover:bg-transparent group-hover:dark:bg-transparent">
-                  Sign Up
-                  </span>
-                  </button>
-                </SignUpButton>
-              </div>
-                </div>
-            </SignedOut>
-
-            <SignedIn>
-              <div className='mr-8 felx items-center'>
-                <UserButton/>
-              </div>
-            </SignedIn>
-            </div>
-          </nav>
-          <div className='flex'>
-
-          <Sidebar></Sidebar>
-          {children}
-          </div>
-        </body>
+  <div className="flex h-[calc(100vh-4rem)] overflow-y-hidden"> {/* subtract navbar height */}
+    <Sidebar /> {/* Should be sticky */}
+    <main className="flex-1 overflow-y-auto p-6 transition-all duration-300 ease-in-out">
+      {children}
+    </main>
+  </div>
+</body>
       </html>
     </ClerkProvider>
   );

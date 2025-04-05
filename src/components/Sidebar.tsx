@@ -10,7 +10,7 @@ interface SidebarProps {
 }
 
 const Sidebar: React.FC<SidebarProps> = ({ companyName, logoUrl }) => {
-  const [isCollapsed, setIsCollapsed] = useState(false);
+  const [isCollapsed, setIsCollapsed] = useState(true);
   const router = useRouter();
   const pathname = usePathname(); // ✅ moved hook here
 
@@ -30,7 +30,7 @@ const Sidebar: React.FC<SidebarProps> = ({ companyName, logoUrl }) => {
     <div 
       className={`h-screen bg-gradient-to-b from-black to-blue-950 text-white transition-all duration-300 ${
         isCollapsed ? 'w-16' : 'w-64'
-      } sticky left-0 top-0 shadow-lg`}
+      } sticky left-0 top-4rem shadow-lg h-`}
     >
       <div className="flex justify-between items-center p-4">
 
