@@ -8,7 +8,7 @@ import uuid
 
 
 at_bp = Blueprint('api_tools', __name__, url_prefix='/api')
-CORS(at_bp)
+# CORS(at_bp)
 
 @at_bp.route('/request', methods=['POST'])
 def make_request():

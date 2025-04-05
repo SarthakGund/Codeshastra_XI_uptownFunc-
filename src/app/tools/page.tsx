@@ -1,4 +1,5 @@
 import { cn } from "@/lib/utils";
+import Link from "next/link";
 import {
   IconAdjustmentsBolt,
   IconCloud,
@@ -16,48 +17,56 @@ const features = [
     description:
       "Conquer messy text! Validate JSON, XML, YAML, and craft beautiful Markdown with our integrated toolkit. Your words, flawlessly formatted.",
     icon: <IconTerminal2 />,
+    route: "/tools/code-formatter"
   },
   {
     title: "Data Alchemist: Transmute Spreadsheets with Ease",
     description:
       "Effortlessly transform CSV to Excel and back again. Convert your data between formats in a snap – no magic wand required, just pure convenience.",
     icon: <IconEaseInOut />,
+    route: "/tools/csv-excel-converter"
   },
   {
     title: "The Randomizer's Realm: Generate the Unexpected",
     description:
       "Need a sprinkle of chance? Generate random numbers and unique identifiers (UUID/GUIDs) for development, testing, or just plain fun. Embrace the unpredictable!",
     icon: <IconCurrencyDollar />,
+    route: "/tools/random-generator"
   },
   {
     title: "Fort Knox of Passwords: Secure Your Digital Life",
     description:
       "Create uncrackable passwords with our robust generator. Plus, explore extra security tools to keep your online world safe and sound.",
     icon: <IconCloud />,
+    route: "/tools/password-generator"
   },
   {
     title: "Code Polisher & Inspector: Craft Pristine Code",
     description:
       "Say goodbye to messy code! Beautify and validate HTML, CSS, JavaScript, and more. Ensure your code shines and runs flawlessly.",
     icon: <IconRouteAltLeft />,
+    route: "/tools/code-formatter"
   },
   {
     title: "Pixel Playground: Convert, Create, and Colorize",
     description:
       "Unleash your inner artist! Convert images, generate QR and barcodes, and play with colors using our intuitive picker and palette tools.",
     icon: <IconHelp />,
+    route: "/tools/image-tools"
   },
   {
     title: "API Explorer's Hub: Your Gateway to Seamless Integration",
     description:
       "Dive into the world of APIs! Build requests and explore REST endpoints with our powerful client and builder. Connect and integrate like a pro.",
     icon: <IconAdjustmentsBolt />,
+    route: "/tools/api-client"
   },
   {
     title: "Network Navigator: Peer into the Digital Infrastructure",
     description:
       "Explore the digital landscape! Perform IP lookups, DNS checks, and trace routes with our essential networking tools. Understand the connections that power the web.",
     icon: <IconHeart />,
+    route: "/tools/network-tools"
   },
 ];
 
@@ -66,11 +75,13 @@ const Feature = ({
   description,
   icon,
   index,
+  route,
 }: {
   title: string;
   description: string;
   icon: React.ReactNode;
   index: number;
+  route: string;
 }) => {
   return (
     <div
@@ -107,6 +118,15 @@ const Feature = ({
       <p className="text-sm text-neutral-300 dark:text-neutral-300 max-w-xs relative z-10 px-10">
         {description}
       </p>
+      
+      {/* Invisible link overlay that preserves all CSS */}
+      <Link 
+        href={route}
+        className="absolute inset-0 z-20 cursor-pointer"
+        aria-label={`Go to ${title}`}
+      >
+        <span className="sr-only">Go to {title}</span>
+      </Link>
     </div>
   );
 };

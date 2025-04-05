@@ -6,13 +6,13 @@ import os
 import google.generativeai as genai
 import yaml
 
-GOOGLE_API_KEY = os.environ.get("GOOGLE_API_KEY", "your-api-key-here")
+GOOGLE_API_KEY = os.environ.get("GOOGLE_API_KEY")
 genai.configure(api_key=GOOGLE_API_KEY)
 
 model = genai.GenerativeModel('gemini-2.0-flash-thinking-exp-01-21')
 
 cfv_bp = Blueprint('code_formatters', __name__, url_prefix='/api')
-CORS(cfv_bp)
+# CORS(cfv_bp)
 
 # Helper functions for formatting and validation using Gemini
 def format_with_gemini(code, language, indent_type='spaces', indent_size=4):
@@ -41,7 +41,7 @@ def format_with_gemini(code, language, indent_type='spaces', indent_size=4):
             formatted_code = match.group(1).strip()
         else:
             formatted_code = formatted_text
-        
+        # print(formatted_code)
         return {"formatted_code": formatted_code, "errors": None}
     except Exception as e:
         return {"formatted_code": code, "errors": str(e)}
@@ -246,7 +246,7 @@ def format_code():
         return jsonify({"error": f"Formatting not supported for language: {language}"}), 400
     
     result = formatter(code)
-    return jsonify(result), 200
+    return jsonify(result), 201
 
 @cfv_bp.route('/validate', methods=['POST'])
 def validate_code():
@@ -281,4 +281,4 @@ def validate_code():
         return jsonify({"error": f"Validation not supported for language: {language}"}), 400
     
     result = validator(code)
-    return jsonify(result), 200
+    return jsonify(result), 201

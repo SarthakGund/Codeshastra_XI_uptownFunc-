@@ -10,7 +10,7 @@ from routes.ApiTools_route import at_bp
 from routes.CodeFormatters_route import cfv_bp
 
 app = Flask(__name__)
-CORS(app)
+CORS(app, resources={r"/*": {"origins": "*"}}, supports_credentials=True)
 load_dotenv()
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'

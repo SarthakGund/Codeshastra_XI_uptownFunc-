@@ -10,7 +10,7 @@ import dns.resolver
 import time
 
 nt_bp = Blueprint('network_tools', __name__, url_prefix='/api')
-CORS(nt_bp)
+# CORS(nt_bp)
 
 @nt_bp.route('/ip-lookup', methods=['POST'])
 def ip_lookup():

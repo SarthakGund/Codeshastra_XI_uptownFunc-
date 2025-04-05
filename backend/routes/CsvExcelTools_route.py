@@ -6,7 +6,7 @@ import os
 import mimetypes
 
 cet_bp = Blueprint('cet', __name__, url_prefix='/api')
-CORS(cet_bp)
+# CORS(cet_bp)
 
 @cet_bp.route('/csv-to-excel', methods=['POST'])
 def csv_to_excel():

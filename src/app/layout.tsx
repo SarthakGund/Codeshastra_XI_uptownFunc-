@@ -38,9 +38,9 @@ export default function RootLayout({
 }>) {
   return (
     <ClerkProvider>
-      <html lang="en">
+      <html lang="en" suppressHydrationWarning>
       <body
-          className={`${geistSans.variable} ${geistMono.variable} antialiased bg-black text-white h-screen w-screen`}
+          className={`${geistSans.variable} ${geistMono.variable} antialiased bg-black text-white h-screen w-screen`} suppressHydrationWarning
         >
 
   <nav className="flex justify-between items-center bg-black text-white h-16 px-4 sticky top-0 z-50 border-b border-white/10">
