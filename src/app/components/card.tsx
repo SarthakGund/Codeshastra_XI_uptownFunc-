@@ -16,7 +16,7 @@ import Link from "next/link";
 export function ThreeDCardDemo() {
   return (
     <CardContainer className="inter-var">
-      <CardBody className="bg-gray-950 relative group/card dark:hover:shadow-2xl dark:hover:shadow-emerald-500/[0.1] dark:bg-black border border-gray-700 w-[18rem] rounded-xl p-3 flex flex-col justify-between">
+      <CardBody className="bg-black relative group/card dark:hover:shadow-2xl dark:hover:shadow-emerald-500/[0.1] dark:bg-black w-[18rem] rounded-xl p-3 flex flex-col justify-between">
 
         <CardItem
           translateZ="50"
@@ -56,7 +56,7 @@ export function ThreeDCardDemo() {
             as="button"
             className="px-4 py-2 rounded-xl bg-black dark:bg-white dark:text-black text-white text-xs font-bold"
           >
-            Go There
+            {/* Go There */}
           </CardItem>
         </div>
 
