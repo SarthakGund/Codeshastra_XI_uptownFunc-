@@ -4,7 +4,8 @@ from flask_sqlalchemy import SQLAlchemy
 from routes.RandomPassNo_route import rpn_bp
 from routes.CsvExcelTools import cet_bp
 from routes.ImageGen_route import ig_bp
-
+from routes.NetworkTools_route import nt_bp
+from routes.ApiTools_route import at_bp
 
 app = Flask(__name__)
 CORS(app)
@@ -16,8 +17,8 @@ db = SQLAlchemy(app)
 app.register_blueprint(rpn_bp)
 app.register_blueprint(cet_bp)
 app.register_blueprint(ig_bp)
-
-
+app.register_blueprint(nt_bp)
+app.register_blueprint(at_bp)
 
 @app.route('/api', methods=['GET'])
 def api():

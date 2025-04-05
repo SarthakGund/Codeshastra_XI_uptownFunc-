@@ -10,8 +10,7 @@ CORS(cet_bp)
 
 @cet_bp.route('/csv-to-excel', methods=['POST'])
 def csv_to_excel():
-    # 1. File size limit (60MB)
-    max_size = 10 * 1024 * 1024  # 60MB limit
+    max_size = 10 * 1024 * 1024 
     if request.content_length > max_size:
         return jsonify({"error": "File too large, max size is 10MB"}), 413
     

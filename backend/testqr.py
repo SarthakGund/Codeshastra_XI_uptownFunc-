@@ -1,6 +1,5 @@
 import requests
 
-# Change the URL if your server runs on a different host/port
 base_url = "http://127.0.0.1:5050/api"
 
 def test_generate_barcode(text):
