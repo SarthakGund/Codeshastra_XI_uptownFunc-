@@ -43,19 +43,19 @@ def password_entropy(password):
     return round(entropy, 2)
 
 
-length = int(input("Enter desired password length (min 8): "))
-use_symbols = input("Include symbols? (y/n): ").lower() == 'y'
-use_numbers = input("Include numbers? (y/n): ").lower() == 'y'
+# length = int(input("Enter desired password length (min 8): "))
+# use_symbols = input("Include symbols? (y/n): ").lower() == 'y'
+# use_numbers = input("Include numbers? (y/n): ").lower() == 'y'
 
-password = generate_secure_password(length, use_symbols, use_numbers)
-entropy = password_entropy(password)
+# password = generate_secure_password(length, use_symbols, use_numbers)
+# entropy = password_entropy(password)
 
-print("\nYour secure password is:", password)
-print("Estimated strength (entropy):", entropy, "bits")
+# print("\nYour secure password is:", password)
+# print("Estimated strength (entropy):", entropy, "bits")
 
-if entropy < 40:
-    print("Strength: Weak")
-elif entropy < 60:
-    print("Strength: Moderate")
-else:
-    print("Strength: Strong")
+# if entropy < 40:
+#     print("Strength: Weak")
+# elif entropy < 60:
+#     print("Strength: Moderate")
+# else:
+#     print("Strength: Strong")
