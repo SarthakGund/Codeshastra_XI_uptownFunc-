@@ -12,15 +12,15 @@ export default function ImageGeneratorTool() {
   const [activeTab, setActiveTab] = useState<TabType>('qrcode');
 
   return (
-    <div className="bg-white rounded-lg shadow-lg overflow-hidden">
+    <div className="bg-black rounded-lg shadow-lg overflow-hidden">
       {/* Tabs */}
       <div className="flex border-b">
         <button
           onClick={() => setActiveTab('qrcode')}
           className={`flex items-center px-6 py-3 text-sm font-medium transition-colors ${
             activeTab === 'qrcode'
-              ? 'bg-white text-blue-600 border-b-2 border-blue-600'
-              : 'text-gray-600 hover:text-blue-600'
+              ? 'bg-black text-blue-500 border-b-2 border-blue-500'
+              : 'text-gray-600 hover:text-blue-500'
           }`}
         >
           <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -44,8 +44,8 @@ export default function ImageGeneratorTool() {
           onClick={() => setActiveTab('barcode')}
           className={`flex items-center px-6 py-3 text-sm font-medium transition-colors ${
             activeTab === 'barcode'
-              ? 'bg-white text-blue-600 border-b-2 border-blue-600'
-              : 'text-gray-600 hover:text-blue-600'
+              ? 'bg-black text-blue-500 border-b-2 border-blue-500'
+              : 'text-gray-600 hover:text-blue-500'
           }`}
         >
           <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -62,8 +62,8 @@ export default function ImageGeneratorTool() {
           onClick={() => setActiveTab('converter')}
           className={`flex items-center px-6 py-3 text-sm font-medium transition-colors ${
             activeTab === 'converter'
-              ? 'bg-white text-blue-600 border-b-2 border-blue-600'
-              : 'text-gray-600 hover:text-blue-600'
+              ? 'bg-black text-blue-500 border-b-2 border-blue-500'
+              : 'text-gray-600 hover:text-blue-500'
           }`}
         >
           <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">

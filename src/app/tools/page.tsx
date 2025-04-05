@@ -66,7 +66,7 @@ const features = [
     description:
       "Explore the digital landscape! Perform IP lookups, DNS checks, and trace routes with our essential networking tools. Understand the connections that power the web.",
     icon: <IconHeart />,
-    route: "/tools/network-tools"
+    route: "/tools/network"
   },
 ];
 

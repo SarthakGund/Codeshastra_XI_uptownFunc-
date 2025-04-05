@@ -238,7 +238,7 @@ export default function NetworkTools() {
     switch (activeTab) {
       case 'ip':
         return (
-          <div className="bg-gray-50 p-4 rounded-md">
+          <div className="bg-gray-900 p-4 rounded-md">
             <h3 className="text-lg font-semibold mb-3">IP Information</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
               {Object.entries(result).map(([key, value]) => (
@@ -253,7 +253,7 @@ export default function NetworkTools() {
       
       case 'dns':
         return (
-          <div className="bg-gray-50 p-4 rounded-md">
+          <div className="bg-gray-900 p-4 rounded-md">
             <h3 className="text-lg font-semibold mb-3">DNS Lookup Results</h3>
             <div className="mb-3">
               <p><span className="font-medium">Domain:</span> {result.domain}</p>
@@ -278,26 +278,26 @@ export default function NetworkTools() {
       
       case 'ping':
         return (
-          <div className="bg-gray-50 p-4 rounded-md space-y-4">
+          <div className="bg-gray-900 p-4 rounded-md space-y-4">
             <h3 className="text-lg font-semibold">Ping Results</h3>
             
             {result.statistics && (
-              <div className="bg-white p-3 rounded-md shadow-sm">
+              <div className="bg-black p-3 rounded-md shadow-sm">
                 <h4 className="font-medium mb-2">Statistics</h4>
                 <div className="grid grid-cols-2 gap-2">
-                  <div className="px-3 py-2 bg-gray-50 rounded">
+                  <div className="px-3 py-2 bg-gray-900 rounded">
                     <p className="text-xs text-gray-500">Min</p>
                     <p className="font-medium">{result.statistics.min_ms} ms</p>
                   </div>
-                  <div className="px-3 py-2 bg-gray-50 rounded">
+                  <div className="px-3 py-2 bg-gray-900 rounded">
                     <p className="text-xs text-gray-500">Max</p>
                     <p className="font-medium">{result.statistics.max_ms} ms</p>
                   </div>
-                  <div className="px-3 py-2 bg-gray-50 rounded">
+                  <div className="px-3 py-2 bg-gray-900 rounded">
                     <p className="text-xs text-gray-500">Average</p>
                     <p className="font-medium">{result.statistics.avg_ms} ms</p>
                   </div>
-                  <div className="px-3 py-2 bg-gray-50 rounded">
+                  <div className="px-3 py-2 bg-gray-900 rounded">
                     <p className="text-xs text-gray-500">Packet Loss</p>
                     <p className="font-medium">{result.statistics.packet_loss_percent}%</p>
                   </div>
@@ -316,10 +316,10 @@ export default function NetworkTools() {
       
       case 'traceroute':
         return (
-          <div className="bg-gray-50 p-4 rounded-md">
+          <div className="bg-gray-900 p-4 rounded-md">
             <h3 className="text-lg font-semibold mb-3">Traceroute Results for {result.target}</h3>
             <div className="overflow-x-auto">
-              <table className="min-w-full bg-white border border-gray-200">
+              <table className="min-w-full bg-black border border-gray-200">
                 <thead>
                   <tr className="bg-gray-100">
                     <th className="py-2 px-4 border-b text-left">Hop</th>
@@ -329,7 +329,7 @@ export default function NetworkTools() {
                 </thead>
                 <tbody>
                   {result.hops.map((hop: any, index: number) => (
-                    <tr key={index} className={index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
+                    <tr key={index} className={index % 2 === 0 ? 'bg-black' : 'bg-gray-900'}>
                       <td className="py-2 px-4 border-b">{hop.ttl}</td>
                       <td className="py-2 px-4 border-b">{hop.ip}</td>
                       <td className="py-2 px-4 border-b">
@@ -353,8 +353,8 @@ export default function NetworkTools() {
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-md p-6">
-      <h2 className="text-2xl font-bold mb-6 text-gray-800">Network Tools</h2>
+    <div className="bg-black rounded-lg shadow-md p-6">
+      {/* <h2 className="text-2xl font-bold mb-6 text-gray-800">Network Tools</h2> */}
       
       {/* Tab Navigation */}
       <div className="mb-6 border-b">
@@ -367,8 +367,8 @@ export default function NetworkTools() {
             }}
             className={`px-4 py-2 mr-2 mb-2 text-sm font-medium rounded-t-md transition-colors ${
               activeTab === 'ip'
-                ? 'bg-blue-50 border-b-2 border-blue-500 text-blue-600'
-                : 'hover:bg-gray-50 border-b-2 border-transparent'
+                ? 'bg-gray-900 border-b-2 border-blue-500 text-blue-600'
+                : 'hover:bg-gray-900 border-b-2 border-transparent'
             }`}
           >
             IP Lookup
@@ -382,8 +382,8 @@ export default function NetworkTools() {
             }}
             className={`px-4 py-2 mr-2 mb-2 text-sm font-medium rounded-t-md transition-colors ${
               activeTab === 'dns'
-                ? 'bg-blue-50 border-b-2 border-blue-500 text-blue-600'
-                : 'hover:bg-gray-50 border-b-2 border-transparent'
+                ? 'bg-gray-900  border-b-2 border-blue-500 text-blue-600'
+                : 'hover:bg-gray-900 border-b-2 border-transparent'
             }`}
           >
             DNS Lookup
@@ -397,8 +397,8 @@ export default function NetworkTools() {
             }}
             className={`px-4 py-2 mr-2 mb-2 text-sm font-medium rounded-t-md transition-colors ${
               activeTab === 'ping'
-                ? 'bg-blue-50 border-b-2 border-blue-500 text-blue-600'
-                : 'hover:bg-gray-50 border-b-2 border-transparent'
+                ? 'bg-gray-900 border-b-2 border-blue-500 text-blue-600'
+                : 'hover:bg-gray-900 border-b-2 border-transparent'
             }`}
           >
             Ping
@@ -412,8 +412,8 @@ export default function NetworkTools() {
             }}
             className={`px-4 py-2 mr-2 mb-2 text-sm font-medium rounded-t-md transition-colors ${
               activeTab === 'traceroute'
-                ? 'bg-blue-50 border-b-2 border-blue-500 text-blue-600'
-                : 'hover:bg-gray-50 border-b-2 border-transparent'
+                ? 'bg-gray-900 border-b-2 border-blue-500 text-blue-600'
+                : 'hover:bg-gray-900 border-b-2 border-transparent'
             }`}
           >
             Traceroute
@@ -423,7 +423,7 @@ export default function NetworkTools() {
       
       <div className="space-y-6">
         {/* Input Form */}
-        <div className="bg-gray-50 p-4 rounded-md">
+        <div className="bg-gray-900 p-4 rounded-md">
           {renderTabContent()}
           
           <div className="mt-4">
@@ -449,7 +449,7 @@ export default function NetworkTools() {
         
         {/* Error Message */}
         {error && (
-          <div className="bg-red-50 p-4 rounded-md border-l-4 border-red-500">
+          <div className="bg-gray-900 p-4 rounded-md border-l-4 border-gray-9000">
             <div className="flex">
               <div className="flex-shrink-0">
                 <svg className="h-5 w-5 text-red-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">

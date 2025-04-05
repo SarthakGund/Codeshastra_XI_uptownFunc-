@@ -118,7 +118,7 @@ export default function CodeFormatter() {
   };
 
   return (
-    <div className="bg-gray-900 rounded-lg shadow-md p-6">
+    <div className="bg-black rounded-lg shadow-md p-6">
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-2xl font-bold text-gray-100">Code Formatter & Validator</h2>
         <div className="flex space-x-2">
@@ -127,7 +127,7 @@ export default function CodeFormatter() {
             className={`px-4 py-2 text-sm font-medium rounded-md transition-colors ${
               mode === 'format'
                 ? 'bg-blue-600 text-white'
-                : 'bg-gray-700 text-gray-200 hover:bg-gray-600'
+                : 'bg-bgray-800 text-gray-200 hover:bg-gray-600'
             }`}
           >
             Format
@@ -137,7 +137,7 @@ export default function CodeFormatter() {
             className={`px-4 py-2 text-sm font-medium rounded-md transition-colors ${
               mode === 'validate'
                 ? 'bg-blue-600 text-white'
-                : 'bg-gray-700 text-gray-200 hover:bg-gray-600'
+                : 'bg-bgray-800 text-gray-200 hover:bg-gray-600'
             }`}
           >
             Validate
@@ -155,7 +155,7 @@ export default function CodeFormatter() {
               id="language"
               value={language}
               onChange={(e) => setLanguage(e.target.value)}
-              className="w-full px-3 py-2 bg-gray-800 text-gray-100 border border-gray-700 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+              className="w-full px-3 py-2 bg-gray-900 text-gray-100 border border-gray-700 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
             >
               {languages.map((lang) => (
                 <option key={lang.value} value={lang.value}>
@@ -177,7 +177,7 @@ export default function CodeFormatter() {
                     className={`px-3 py-2 text-sm font-medium rounded ${
                       options.indentType === 'spaces'
                         ? 'bg-blue-800 text-blue-100 border border-blue-600'
-                        : 'bg-gray-700 text-gray-200 border border-gray-600'
+                        : 'bg-bgray-800 text-gray-200 border border-gray-600'
                     }`}
                   >
                     Spaces
@@ -187,7 +187,7 @@ export default function CodeFormatter() {
                     className={`px-3 py-2 text-sm font-medium rounded ${
                       options.indentType === 'tabs'
                         ? 'bg-blue-800 text-blue-100 border border-blue-600'
-                        : 'bg-gray-700 text-gray-200 border border-gray-600'
+                        : 'bg-bgray-800 text-gray-200 border border-gray-600'
                     }`}
                   >
                     Tabs
@@ -207,7 +207,7 @@ export default function CodeFormatter() {
                       className={`w-8 h-8 flex items-center justify-center rounded-md ${
                         options.indentSize === size
                           ? 'bg-blue-800 text-blue-100 border border-blue-600'
-                          : 'bg-gray-700 text-gray-200 border border-gray-600'
+                          : 'bg-bgray-800 text-gray-200 border border-gray-600'
                       }`}
                     >
                       {size}
@@ -238,7 +238,7 @@ export default function CodeFormatter() {
               id="code-input"
               value={code}
               onChange={(e) => setCode(e.target.value)}
-              className="w-full h-80 p-3 font-mono text-sm bg-gray-800 text-gray-200 border border-gray-700 rounded-md shadow-inner focus:ring-blue-500 focus:border-blue-500"
+              className="w-full h-80 p-3 font-mono text-sm bg-gray-900 text-gray-200 border border-gray-700 rounded-md shadow-inner focus:ring-blue-500 focus:border-blue-500"
               placeholder={`Enter your ${language} code here...`}
             />
           </div>
@@ -262,7 +262,7 @@ export default function CodeFormatter() {
             className={`relative w-full h-80 ${
               mode === 'validate' && validationResult 
                 ? validationResult.valid ? 'bg-green-900 border-green-700' : 'bg-red-900 border-red-700' 
-                : 'bg-gray-800 border-gray-700'
+                : 'bg-gray-900 border-gray-700'
             } border rounded-md shadow-inner`}
           >
             {mode === 'format' ? (

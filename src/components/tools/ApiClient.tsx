@@ -175,7 +175,7 @@ export default function ApiClient() {
   
   // Get appropriate status color
   const getStatusColor = () => {
-    if (!response) return 'bg-gray-500';
+    if (!response) return 'bg-gray-9000';
     
     const status = response.status_code;
     if (status >= 200 && status < 300) return 'bg-green-500';
@@ -196,9 +196,9 @@ export default function ApiClient() {
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-md">
+    <div className="bg-black rounded-lg shadow-md">
       <div className="border-b p-4 flex items-center justify-between">
-        <h2 className="text-xl font-bold text-gray-800">REST API Client</h2>
+        {/* <h2 className="text-xl font-bold text-gray-800">REST API Client</h2> */}
         <div className="text-sm text-gray-500">Developer Tools</div>
       </div>
       
@@ -210,7 +210,7 @@ export default function ApiClient() {
             <select 
               value={method} 
               onChange={(e) => setMethod(e.target.value)}
-              className="w-full md:w-auto px-4 py-2 border rounded-md bg-gray-50 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+              className="w-full md:w-auto px-4 py-2 border rounded-md bg-gray-900 focus:ring-2 focus:ring-blue-500 focus:outline-none"
             >
               <option value="GET">GET</option>
               <option value="POST">POST</option>
@@ -381,14 +381,14 @@ export default function ApiClient() {
                   <div className="flex items-center gap-2">
                     <button
                       onClick={formatBody}
-                      className="text-xs bg-gray-100 hover:bg-gray-200 px-2 py-1 rounded"
+                      className="text-xs bg-gray-900 hover:bg-gray-800 px-2 py-1 rounded"
                       title="Format JSON"
                     >
                       Format JSON
                     </button>
                     <button
                       onClick={() => setBody('')}
-                      className="text-xs bg-gray-100 hover:bg-gray-200 px-2 py-1 rounded"
+                      className="text-xs bg-gray-900 hover:bg-gray-800 px-2 py-1 rounded"
                       title="Clear"
                     >
                       Clear
@@ -511,9 +511,9 @@ export default function ApiClient() {
             
             {/* Response content */}
             {activeResponseTab === 'body' ? (
-              <pre className="p-4 bg-gray-50 rounded-md border overflow-auto font-mono text-sm h-60 whitespace-pre-wrap">{getFormattedResponseBody()}</pre>
+              <pre className="p-4 bg-gray-900 rounded-md border overflow-auto font-mono text-sm h-60 whitespace-pre-wrap">{getFormattedResponseBody()}</pre>
             ) : (
-              <div className="p-4 bg-gray-50 rounded-md border overflow-auto h-60">
+              <div className="p-4 bg-gray-900 rounded-md border overflow-auto h-60">
                 <table className="w-full text-sm">
                   <thead>
                     <tr className="border-b">
@@ -523,7 +523,7 @@ export default function ApiClient() {
                   </thead>
                   <tbody>
                     {Object.entries(response.headers).map(([key, value]) => (
-                      <tr key={key} className="border-b hover:bg-gray-100">
+                      <tr key={key} className="border-b hover:bg-gray-900">
                         <td className="py-2 pr-4 font-mono">{key}</td>
                         <td className="py-2 font-mono text-gray-700">{value}</td>
                       </tr>
