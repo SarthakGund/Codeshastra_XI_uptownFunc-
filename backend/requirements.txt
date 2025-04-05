@@ -1,0 +1,15 @@
+Flask
+flask-cors
+Flask-SQLAlchemy
+SQLAlchemy
+pandas
+openpyxl
+requests
+python-barcode
+qrcode
+pillow
+pythonping
+dnspython
+pyyaml
+google-generativeai
+python-dotenv

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+<person id="1">
+<name>John Doe</name>
+<age>30</age>
+<address>
+<street>123 Main St</street><city>Anytown</city><state>CA</state><zip>12345</zip>
+</address>
+<phoneNumbers>
+<phoneNumber type="home">555-1234</phoneNumber><phoneNumber type="work">555-5678</phoneNumber>
+</phoneNumbers>
+</person>
+</root>
