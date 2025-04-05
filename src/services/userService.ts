@@ -14,6 +14,7 @@ interface UserData {
   lastName?: string | null;
   username?: string | null;
   imageUrl?: string | null;
+  plan?: string; // Add plan field to interface
 }
 
 /**
@@ -40,7 +41,7 @@ export async function createOrUpdateUser(userData: UserData): Promise<boolean> {
       });
       console.log("User updated in Firestore:", userId);
     } else {
-      // Create new user
+      // Create new user with free plan by default
       await setDoc(userRef, {
         email,
         firstName: userData.firstName || null,
@@ -49,7 +50,8 @@ export async function createOrUpdateUser(userData: UserData): Promise<boolean> {
         imageUrl: userData.imageUrl || null,
         createdAt: new Date().toISOString(),
         lastLogin: serverTimestamp(),
-        authProvider: "clerk"
+        authProvider: "clerk",
+        plan: "free" // Set default plan to free
       });
       console.log("New user created in Firestore:", userId);
     }
@@ -57,6 +59,24 @@ export async function createOrUpdateUser(userData: UserData): Promise<boolean> {
     return true;
   } catch (error) {
     console.error("Error in createOrUpdateUser:", error);
+    return false;
+  }
+}
+
+/**
+ * Upgrades a user's plan to pro
+ */
+export async function upgradeUserToPro(userId: string): Promise<boolean> {
+  try {
+    const userRef = doc(db, "users", userId);
+    await updateDoc(userRef, {
+      plan: "pro",
+      upgradedAt: serverTimestamp()
+    });
+    console.log("User upgraded to pro plan:", userId);
+    return true;
+  } catch (error) {
+    console.error("Error upgrading user plan:", error);
     return false;
   }
 }
