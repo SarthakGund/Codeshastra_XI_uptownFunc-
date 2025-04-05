@@ -13,6 +13,7 @@ import {
 import Link from "next/link";
 import Image from "next/image";
 import Sidebar from "@/components/Sidebar";
+import UserHandler from '@/components/auth/UserHandler';
 
 
 
@@ -42,6 +43,7 @@ export default function RootLayout({
       <body
           className={`${geistSans.variable} ${geistMono.variable} antialiased bg-black text-white h-screen w-screen`} suppressHydrationWarning
         >
+          <UserHandler />
 
   <nav className="flex justify-between items-center bg-black text-white h-16 px-4 sticky top-0 z-50 border-b border-white/10">
     <div className="flex items-center">
