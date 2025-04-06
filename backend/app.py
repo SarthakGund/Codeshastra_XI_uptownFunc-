@@ -12,6 +12,7 @@ from routes.OCR_route import ocr_bp
 from routes.RegexBuilder_route import regex_bp
 from routes.UnitConverter_route import uc_bp
 from routes.UserFeedback_routes import feedback_bp
+from routes.SqlConverter_route import sql_bp
 
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "*"}}, supports_credentials=True)
@@ -31,6 +32,7 @@ app.register_blueprint(ocr_bp)
 app.register_blueprint(regex_bp)
 app.register_blueprint(uc_bp)
 app.register_blueprint(feedback_bp)
+app.register_blueprint(sql_bp)
 
 @app.route('/api', methods=['GET'])
 def api():
