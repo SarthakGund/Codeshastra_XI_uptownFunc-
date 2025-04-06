@@ -8,6 +8,9 @@ from routes.ImageGen_route import ig_bp
 from routes.NetworkTools_route import nt_bp
 from routes.ApiTools_route import at_bp
 from routes.CodeFormatters_route import cfv_bp
+from routes.OCR_route import ocr_bp
+from routes.RegexBuilder_route import regex_bp
+from routes.UnitConverter_route import uc_bp
 
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "*"}}, supports_credentials=True)
@@ -23,6 +26,9 @@ app.register_blueprint(ig_bp)
 app.register_blueprint(nt_bp)
 app.register_blueprint(at_bp)
 app.register_blueprint(cfv_bp)
+app.register_blueprint(ocr_bp)
+app.register_blueprint(regex_bp)
+app.register_blueprint(uc_bp)
 
 @app.route('/api', methods=['GET'])
 def api():

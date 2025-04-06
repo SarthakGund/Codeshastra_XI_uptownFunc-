@@ -13,3 +13,8 @@ dnspython
 pyyaml
 google-generativeai
 python-dotenv
+pytesseract
+python-docx
+fpdf
+opencv-python
+Verbalexpressions

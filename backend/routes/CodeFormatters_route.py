@@ -20,7 +20,7 @@ def format_with_gemini(code, language, indent_type='spaces', indent_size=4):
         prompt = f"""
         Format the following {language} code according to best practices.
         Use {indent_size} {indent_type} for indentation.
-        Return ONLY the formatted code without any explanations or markdown.
+        Return ONLY the formatted code syntactically correct without any explanations or markdown.
         
         Code to format:
         ```{language}

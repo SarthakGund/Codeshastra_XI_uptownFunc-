@@ -6,7 +6,6 @@ import json
 import xml.dom.minidom
 import uuid
 
-
 at_bp = Blueprint('api_tools', __name__, url_prefix='/api')
 # CORS(at_bp)
 
