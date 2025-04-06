@@ -93,7 +93,7 @@ export async function canUseTools(userId: string): Promise<{allowed: boolean; re
       return { allowed: false, remaining: 0 };
     }
 
-    // Pro users have unlimited access
+    // Pro users have unlimited access - make this check more robust
     if (userData.plan === 'pro') {
       return { allowed: true };
     }

@@ -12,6 +12,7 @@ export function useToolAccess() {
   const [canUseTools, setCanUseTools] = useState<boolean>(true);
   const [remainingUses, setRemainingUses] = useState<number | null>(null);
   const [isChecking, setIsChecking] = useState<boolean>(true);
+  const [isPro, setIsPro] = useState<boolean>(false); 
   const router = useRouter();
 
   // Check if user can access tools
@@ -28,6 +29,8 @@ export function useToolAccess() {
           if (data.success) {
             setCanUseTools(data.allowed);
             setRemainingUses(data.remaining);
+            // Set isPro based on API response
+            setIsPro(data.isPro || false);
           } else {
             console.error('Failed to check tool access:', data.error);
             setCanUseTools(false);
@@ -107,6 +110,7 @@ export function useToolAccess() {
     isChecking,
     recordToolUsage,
     redirectToUpgrade,
-    isPro: isSignedIn && user?.publicMetadata?.plan === 'pro'
+    // Use the state from Firestore instead of Clerk metadata
+    isPro
   };
 }

@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { canUseTools } from "@/services/userService";
 import { currentUser } from "@clerk/nextjs/server";
+import { getUser } from "@/services/userService";
 
 export async function GET() {
   try {
@@ -17,14 +18,17 @@ export async function GET() {
     }
     
     // Check if user can use tools
+    const userData = await getUser(user.id);
+    const isPro = userData?.plan === 'pro';
     const accessCheck = await canUseTools(user.id);
     
     return NextResponse.json({
       success: true,
-      allowed: accessCheck.allowed,
-      remaining: accessCheck.remaining,
+      allowed: accessCheck.allowed || isPro, // Pro users are always allowed
+      remaining: isPro ? null : accessCheck.remaining,
       isAnonymous: false,
-      userId: user.id
+      userId: user.id,
+      isPro: isPro // Add this to the response
     });
   } catch (error) {
     console.error("API route error:", error);

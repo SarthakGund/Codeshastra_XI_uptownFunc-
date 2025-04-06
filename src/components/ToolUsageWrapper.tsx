@@ -24,6 +24,11 @@ export function ToolUsageWrapper({ children, toolName }: ToolUsageWrapperProps) 
     }
   }, [hasRecorded, isPro, canUseTools, recordToolUsage]);
 
+  // Skip usage check for pro users entirely
+  if (isPro) {
+    return <>{children}</>;
+  }
+
   // Expose the recordToolUsage function to child components
   const childrenWithProps = React.Children.map(children, child => {
     if (React.isValidElement(child)) {
