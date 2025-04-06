@@ -9,7 +9,7 @@ interface RandomResult {
   uuid2: string;
 }
 
-export default function RandomGenerator() {
+export default function RandomGenerator({ recordToolUsage }) {
   const [start, setStart] = useState<number>(1);
   const [end, setEnd] = useState<number>(100);
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -31,6 +31,11 @@ export default function RandomGenerator() {
     if (start > end) {
       setError('Start value must be less than or equal to end value');
       return;
+    }
+
+    // Record tool usage for this operation if we're not on Pro plan
+    if (recordToolUsage) {
+      await recordToolUsage();
     }
 
     setIsLoading(true);

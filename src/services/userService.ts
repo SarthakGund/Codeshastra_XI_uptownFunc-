@@ -4,7 +4,8 @@ import {
   setDoc, 
   getDoc, 
   serverTimestamp, 
-  updateDoc 
+  updateDoc,
+  increment 
 } from "firebase/firestore";
 
 interface UserData {
@@ -14,7 +15,8 @@ interface UserData {
   lastName?: string | null;
   username?: string | null;
   imageUrl?: string | null;
-  plan?: string; // Add plan field to interface
+  plan?: string;
+  toolUsage?: number; // Track number of tool usages
 }
 
 /**
@@ -41,7 +43,7 @@ export async function createOrUpdateUser(userData: UserData): Promise<boolean> {
       });
       console.log("User updated in Firestore:", userId);
     } else {
-      // Create new user with free plan by default
+      // Create new user with free plan by default and 0 tool usage
       await setDoc(userRef, {
         email,
         firstName: userData.firstName || null,
@@ -51,7 +53,8 @@ export async function createOrUpdateUser(userData: UserData): Promise<boolean> {
         createdAt: new Date().toISOString(),
         lastLogin: serverTimestamp(),
         authProvider: "clerk",
-        plan: "free" // Set default plan to free
+        plan: "free", // Default plan to free
+        toolUsage: 0   // Initialize tool usage counter
       });
       console.log("New user created in Firestore:", userId);
     }
@@ -60,6 +63,53 @@ export async function createOrUpdateUser(userData: UserData): Promise<boolean> {
   } catch (error) {
     console.error("Error in createOrUpdateUser:", error);
     return false;
+  }
+}
+
+/**
+ * Increments the tool usage count for a user
+ */
+export async function incrementToolUsage(userId: string): Promise<boolean> {
+  try {
+    const userRef = doc(db, "users", userId);
+    await updateDoc(userRef, {
+      toolUsage: increment(1)
+    });
+    return true;
+  } catch (error) {
+    console.error("Error incrementing tool usage:", error);
+    return false;
+  }
+}
+
+/**
+ * Checks if a user can use tools based on their plan and usage count
+ */
+export async function canUseTools(userId: string): Promise<{allowed: boolean; remaining?: number}> {
+  try {
+    const userData = await getUser(userId);
+    
+    if (!userData) {
+      return { allowed: false, remaining: 0 };
+    }
+
+    // Pro users have unlimited access
+    if (userData.plan === 'pro') {
+      return { allowed: true };
+    }
+
+    // Free users have limited access (3 uses)
+    const usageCount = userData.toolUsage || 0;
+    const maxUsage = 3;
+    const remaining = Math.max(0, maxUsage - usageCount);
+    
+    return { 
+      allowed: remaining > 0,
+      remaining 
+    };
+  } catch (error) {
+    console.error("Error checking tool usage:", error);
+    return { allowed: false, remaining: 0 };
   }
 }
 
