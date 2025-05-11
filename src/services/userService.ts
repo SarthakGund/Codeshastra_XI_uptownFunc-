@@ -134,13 +134,13 @@ export async function upgradeUserToPro(userId: string): Promise<boolean> {
 /**
  * Retrieves a user from Firestore
  */
-export async function getUser(userId: string) {
+export async function getUser(userId: string): Promise<{id: string; plan?: string; toolUsage?: number} | null> {
   try {
     const userRef = doc(db, "users", userId);
     const userSnap = await getDoc(userRef);
     
     if (userSnap.exists()) {
-      return { id: userSnap.id, ...userSnap.data() };
+      return { id: userSnap.id, ...userSnap.data() } as {id: string; plan?: string; toolUsage?: number};
     } else {
       return null;
     }
