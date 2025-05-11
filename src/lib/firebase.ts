@@ -10,9 +10,6 @@ const firebaseConfig = {
   appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID
 };
 
-// For debugging - remove in production
-console.log("Firebase initialized with project ID:", process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID);
-
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 export const db = getFirestore(app);

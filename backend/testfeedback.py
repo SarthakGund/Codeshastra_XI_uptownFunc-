@@ -1,4 +1,5 @@
 import requests
+import os
 
 def test_post_feedback(api_url):
     payload = {"feedback": "This is a test feedback."}
@@ -20,8 +21,8 @@ def test_get_feedback(api_url):
         print("Error parsing response:", e)
 
 if __name__ == "__main__":
-    # Adjust the base URL if your Flask API endpoint runs on a different host/port.
-    api_url = "http://localhost:5050"
+    # Use environment variable or default to local development
+    api_url = os.environ.get("API_URL", "http://localhost:5050")
     
     test_post_feedback(api_url)
     test_get_feedback(api_url)
