@@ -1,9 +1,7 @@
-import RegexBuilder from '@/components/tools/RegexBuilder';
+'use client';
 
-export const metadata = {
-  title: 'Regex Pattern Builder | DevUtilities',
-  description: 'Create regular expression patterns easily with AI assistance',
-};
+import RegexBuilder from '@/components/tools/RegexBuilder';
+import { ToolUsageWrapper } from '@/components/ToolUsageWrapper';
 
 export default function RegexBuilderPage() {
   return (
@@ -14,7 +12,9 @@ export default function RegexBuilderPage() {
         Our AI will optimize your regex pattern and explain how it works.
       </p>
       
-      <RegexBuilder />
+      <ToolUsageWrapper toolName="regex-builder">
+        <RegexBuilder />
+      </ToolUsageWrapper>
     </div>
   );
 }

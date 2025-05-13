@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { randomApi } from '@/utils/api';
+import { AlertTriangle } from 'lucide-react';
 
 interface RandomResult {
   random_number: number;
@@ -9,12 +10,18 @@ interface RandomResult {
   uuid2: string;
 }
 
-export default function RandomGenerator({ recordToolUsage }) {
+// Add proper typing for recordToolUsage prop
+interface RandomGeneratorProps {
+  recordToolUsage?: (toolName?: string) => Promise<void>;
+}
+
+export default function RandomGenerator({ recordToolUsage }: RandomGeneratorProps) {
   const [start, setStart] = useState<number>(1);
   const [end, setEnd] = useState<number>(100);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<RandomResult | null>(null);
+  const [usageLimitReached, setUsageLimitReached] = useState<boolean>(false);
 
   const handleStartChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = parseInt(e.target.value);
@@ -33,9 +40,18 @@ export default function RandomGenerator({ recordToolUsage }) {
       return;
     }
 
-    // Record tool usage for this operation if we're not on Pro plan
+    // Record usage for free users (if function is provided)
     if (recordToolUsage) {
-      await recordToolUsage();
+      try {
+        await recordToolUsage('random-generator');
+      } catch (err) {
+        // If usage limit is reached, show appropriate message
+        if (err && typeof err === 'object' && 'message' in err && 
+            err.message.includes('No uses remaining')) {
+          setUsageLimitReached(true);
+          return;
+        }
+      }
     }
 
     setIsLoading(true);
@@ -48,7 +64,12 @@ export default function RandomGenerator({ recordToolUsage }) {
       });
       setResult(data);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'An error occurred');
+      if (err && typeof err === 'object' && 'message' in err && 
+          err.message.includes('No uses remaining')) {
+        setUsageLimitReached(true);
+      } else {
+        setError(err instanceof Error ? err.message : 'An error occurred');
+      }
     } finally {
       setIsLoading(false);
     }
@@ -57,6 +78,19 @@ export default function RandomGenerator({ recordToolUsage }) {
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text);
   };
+
+  // Show usage limit reached message if applicable
+  if (usageLimitReached) {
+    return (
+      <div className="bg-red-900/30 border border-red-700/50 rounded-lg p-6 text-center">
+        <AlertTriangle size={48} className="text-red-500 mx-auto mb-4" />
+        <h3 className="text-xl font-bold text-white mb-2">Usage Limit Reached</h3>
+        <p className="text-gray-300 mb-4">
+          You've reached your usage limit for today. Please upgrade to Pro for unlimited access.
+        </p>
+      </div>
+    );
+  }
 
   return (
     <div className="bg-black rounded-lg shadow-md p-6">

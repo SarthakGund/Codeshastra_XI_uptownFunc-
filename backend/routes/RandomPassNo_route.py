@@ -1,10 +1,8 @@
 from flask import Blueprint, request, jsonify
-from flask_cors import CORS
 from randomno import *
 from randompassword import generate_secure_password, password_entropy
 
 rpn_bp = Blueprint('random_pass_no', __name__, url_prefix='/api')
-# CORS(rpn_bp)
 
 @rpn_bp.route('/random-no', methods=['POST'])
 def random_no():

@@ -2,12 +2,10 @@
 
 import React, { useState, useEffect } from 'react';
 import { Check } from 'lucide-react';
-import { useUser } from '@clerk/nextjs';
 import { useRouter } from 'next/navigation';
-import { getUser } from '@/services/userService';
+import { planApi } from '@/utils/api';
 
 const PricingSection: React.FC = () => {
-  const { user, isLoaded, isSignedIn } = useUser();
   const [userPlan, setUserPlan] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -51,51 +49,32 @@ const PricingSection: React.FC = () => {
     }
   ];
 
-  // Fetch user plan from Firestore when component mounts
+  // Fetch user plan from API when component mounts
   useEffect(() => {
     const fetchUserPlan = async () => {
-      if (isLoaded && isSignedIn && user) {
-        try {
-          const userData = await getUser(user.id);
-          if (userData) {
-            setUserPlan(userData.plan || 'free');
-          } else {
-            setUserPlan('free');
-          }
-        } catch (error) {
-          console.error('Error fetching user plan:', error);
-          setUserPlan('free'); // Default to free if there's an error
-        }
+      try {
+        setIsLoading(true);
+        const data = await planApi.getUserPlan();
+        setUserPlan(data.plan || 'free');
+      } catch (error) {
+        console.error('Error fetching user plan:', error);
+        setErrorMessage("Error fetching user plan");
+        setUserPlan('free'); // Default to free if there's an error
+      } finally {
+        setIsLoading(false);
       }
     };
 
     fetchUserPlan();
-  }, [isLoaded, isSignedIn, user]);
+  }, []);
 
   // Handle plan upgrade
   const handleUpgrade = async () => {
-    if (!isSignedIn) {
-      router.push('/signin');
-      return;
-    }
-
     setIsLoading(true);
     setErrorMessage(null);
 
     try {
-      const response = await fetch('/api/upgrade-plan', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || 'Failed to upgrade plan');
-      }
-
+      await planApi.upgradeToPro();
       setUserPlan('pro');
       setUpgradeSuccess(true);
       
@@ -118,8 +97,8 @@ const PricingSection: React.FC = () => {
           <h2 className="text-3xl font-bold">Choose Your Plan</h2>
           <p className="mt-4 text-xl text-gray-300">Select the perfect plan for your needs</p>
           
-          {/* Show user's current plan if signed in */}
-          {isSignedIn && userPlan && (
+          {/* Show user's current plan */}
+          {userPlan && (
             <div className="mt-6 inline-block bg-gray-800 px-4 py-2 rounded-full">
               <p className="text-sm">
                 Your current plan: <span className="font-bold uppercase">{userPlan}</span>
@@ -212,7 +191,7 @@ const PricingSection: React.FC = () => {
         </div>
         
         {/* Not signed in prompt */}
-        {!isSignedIn && (
+        {!userPlan && (
           <div className="mt-12 text-center p-6 bg-gray-800 rounded-lg">
             <h3 className="text-xl font-semibold mb-2">Ready to upgrade?</h3>
             <p className="text-gray-300 mb-4">Sign in to your account to upgrade to Pro</p>

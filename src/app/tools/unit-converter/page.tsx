@@ -1,9 +1,7 @@
-import UnitConverter from '@/components/tools/UnitConverter';
+'use client';
 
-export const metadata = {
-  title: 'Unit Converter | DevUtilities',
-  description: 'Convert between different units of measurement',
-};
+import UnitConverter from '@/components/tools/UnitConverter';
+import { ToolUsageWrapper } from '@/components/ToolUsageWrapper';
 
 export default function UnitConverterPage() {
   return (
@@ -13,7 +11,9 @@ export default function UnitConverterPage() {
         Easily convert between different units of measurement including length, weight, temperature, and currency.
       </p>
       
-      <UnitConverter />
+      <ToolUsageWrapper toolName="unit-converter">
+        <UnitConverter />
+      </ToolUsageWrapper>
     </div>
   );
 }

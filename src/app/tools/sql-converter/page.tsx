@@ -1,4 +1,5 @@
 import SqlConverter from '@/components/tools/SqlConverter';
+import { ToolUsageWrapper } from '@/components/ToolUsageWrapper';
 
 export default function SqlConverterPage() {
   return (
@@ -7,7 +8,9 @@ export default function SqlConverterPage() {
       <p className="text-gray-300 mb-6">
         A set of tools for working with SQL: convert between dialects, generate mock data from schemas, and convert SQL to JSON schema.
       </p>
-      <SqlConverter />
+      <ToolUsageWrapper toolName="sql-converter">
+        <SqlConverter />
+      </ToolUsageWrapper>
     </div>
   );
 }

@@ -3,6 +3,8 @@
 import { useState, useRef } from 'react';
 import { IconFileText, IconFile, IconUpload } from '@tabler/icons-react';
 
+const API_ENDPOINT = process.env.NEXT_PUBLIC_API_URL + '/api';
+
 export default function OCRConverter() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -52,20 +54,26 @@ export default function OCRConverter() {
       const formData = new FormData();
       formData.append('file', selectedFile);
 
-      const response = await fetch('http://localhost:5050/api/ocr/upload', {
+      const response = await fetch(`${API_ENDPOINT}/ocr/upload`, {
         method: 'POST',
         body: formData,
+        credentials: 'include',
+        mode: 'cors',
+        cache: 'no-cache',
       });
 
       if (!response.ok) {
+        if (response.status === 0) {
+          throw new Error('CORS error or network failure - check server configuration');
+        }
         const errorData = await response.json();
         throw new Error(errorData.error || 'Failed to process image');
       }
 
       const data = await response.json();
       setExtractedText(data.text);
-      setPdfUrl(`http://localhost:5050${data.pdf_url}`);
-      setDocxUrl(`http://localhost:5050${data.docx_url}`);
+      setPdfUrl(`${API_ENDPOINT}${data.pdf_url}`);
+      setDocxUrl(`${API_ENDPOINT}${data.docx_url}`);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred');
     } finally {

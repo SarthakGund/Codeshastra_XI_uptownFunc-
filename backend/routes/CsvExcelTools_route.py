@@ -1,12 +1,10 @@
 from flask import Blueprint, request, jsonify, send_file
-from flask_cors import CORS
 import pandas as pd
 from io import BytesIO
 import os
 import mimetypes
 
 cet_bp = Blueprint('cet', __name__, url_prefix='/api')
-# CORS(cet_bp)
 
 @cet_bp.route('/csv-to-excel', methods=['POST'])
 def csv_to_excel():

@@ -3,6 +3,8 @@
 import { useState, useEffect } from 'react';
 import { IconPlus, IconTrash, IconCheck, IconX, IconRefresh, IconCopy } from '@tabler/icons-react';
 
+const API_ENDPOINT = process.env.NEXT_PUBLIC_API_URL+ '/api';
+
 type CharacterSet = 'digits' | 'letters' | 'lowercase' | 'uppercase' | 'alphanumeric' | 'symbols' | 'any' | 'custom';
 
 interface LengthOption {
@@ -203,13 +205,19 @@ export default function RegexBuilder() {
     setResult(null);
     
     try {
-      const response = await fetch('http://localhost:5050/api/regex-builder/generate', {
+      const response = await fetch(`${API_ENDPOINT}/regex-builder/generate`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ blocks }),
+        credentials: 'include',
+        mode: 'cors',
+        cache: 'no-cache',
       });
       
       if (!response.ok) {
+        if (response.status === 0) {
+          throw new Error('CORS error or network failure - check server configuration');
+        }
         throw new Error(`API request failed with status ${response.status}`);
       }
       
@@ -220,7 +228,9 @@ export default function RegexBuilder() {
       setResult({
         success: false,
         pattern: '',
-        explanation: 'Failed to connect to backend. Please make sure the server is running on port 5050.'
+        explanation: error instanceof Error 
+          ? error.message 
+          : 'Failed to connect to backend. Please make sure the server is running on port 5050.'
       });
     } finally {
       setIsGenerating(false);
@@ -235,14 +245,14 @@ export default function RegexBuilder() {
     setTestResult(null);
     
     try {
-      const response = await fetch('http://localhost:5050/api/regex-builder/test', {
+      const response = await fetch(`${API_ENDPOINT}/regex-builder/test`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
           pattern: result.pattern,
           testString 
         }),
-        // Add these options to help with CORS and errors
+        credentials: 'include',
         mode: 'cors',
         cache: 'no-cache',
       });

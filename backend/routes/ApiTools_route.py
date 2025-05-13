@@ -1,5 +1,4 @@
 from flask import Blueprint, request, jsonify
-from flask_cors import CORS
 import requests
 import time
 import json
@@ -7,7 +6,6 @@ import xml.dom.minidom
 import uuid
 
 at_bp = Blueprint('api_tools', __name__, url_prefix='/api')
-# CORS(at_bp)
 
 @at_bp.route('/request', methods=['POST'])
 def make_request():

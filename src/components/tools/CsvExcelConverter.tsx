@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useRef } from 'react';
-import Image from 'next/image';
+import { csvExcelApi } from '@/utils/api';
 
 type ConversionType = 'csv-to-excel' | 'excel-to-csv';
 
@@ -89,10 +89,9 @@ export default function CsvExcelConverter() {
     formData.append('file', file);
 
     try {
-      const response = await fetch(`http://localhost:5050/api/${conversionType}`, {
-        method: 'POST',
-        body: formData,
-      });
+      const response = conversionType === 'csv-to-excel' 
+        ? await csvExcelApi.convertCsvToExcel(formData)
+        : await csvExcelApi.convertExcelToCsv(formData);
 
       if (!response.ok) {
         const errorData = await response.json();
@@ -204,7 +203,7 @@ export default function CsvExcelConverter() {
             <div className="flex justify-center">
               {conversionType === 'csv-to-excel' ? (
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16 text-gray-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0-2 2h12a2 2 0 0 0 2-2V8z" />
                   <path d="M14 2v6h6" />
                   <path d="M16 13H8" />
                   <path d="M16 17H8" />

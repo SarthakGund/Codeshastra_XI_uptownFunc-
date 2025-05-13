@@ -1,11 +1,9 @@
 from flask import Blueprint, request, jsonify
-from flask_cors import CORS
 from qrnbarcodegen import generate_barcode_base64  
 from qrnbarcodegen import generate_qr_code_base64 
 from imageconverter import convert_image
 
-ig_bp = Blueprint('image_gen', __name__, url_prefix='/api')    
-# CORS(ig_bp)
+ig_bp = Blueprint('image_gen', __name__, url_prefix='/api')
 
 @ig_bp.route('/generate-barcode', methods=['POST'])
 def generate_barcode():

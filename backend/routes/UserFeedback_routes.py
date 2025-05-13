@@ -1,9 +1,6 @@
-from flask import Flask, request, jsonify
-from flask_cors import CORS
+from flask import request, jsonify
 from user_feedback import save_feedback, get_all_feedback
 from flask import Blueprint
-
-
 
 feedback_bp = Blueprint('feedback', __name__, url_prefix ='/api')
 
@@ -27,11 +24,3 @@ def fetch_feedback():
         return jsonify({"feedback": all_feedback}), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 500
-
-# Register the blueprint in the main app
-app = Flask(__name__)
-CORS(app)
-app.register_blueprint(feedback_bp)
-
-if __name__ == '__main__':
-    app.run(debug=True)

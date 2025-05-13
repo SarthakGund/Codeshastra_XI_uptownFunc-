@@ -1,8 +1,6 @@
 from flask import Blueprint, request, jsonify
-from flask_cors import CORS
 
 tf_bp = Blueprint('text_formatter', __name__, url_prefix='/api')
-# CORS(tf_bp)
 
 @tf_bp.route('/csv-formatter', methods=['POST'])
 def csv_formatter():

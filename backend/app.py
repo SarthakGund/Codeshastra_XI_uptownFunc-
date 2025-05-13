@@ -1,6 +1,7 @@
-from flask import Flask, request, jsonify
+from flask import Flask, send_from_directory
 from flask_cors import CORS
-from flask_sqlalchemy import SQLAlchemy
+import os
+from firebase_admin import credentials, initialize_app, firestore
 from dotenv import load_dotenv
 from routes.RandomPassNo_route import rpn_bp
 from routes.CsvExcelTools_route import cet_bp
@@ -13,14 +14,23 @@ from routes.RegexBuilder_route import regex_bp
 from routes.UnitConverter_route import uc_bp
 from routes.UserFeedback_routes import feedback_bp
 from routes.SqlConverter_route import sql_bp
+from routes.Auth_routes import auth_bp
 
-app = Flask(__name__)
-CORS(app, resources={r"/*": {"origins": "*"}}, supports_credentials=True)
+app = Flask(__name__, static_folder='../out', static_url_path='/')
 load_dotenv()
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-db = SQLAlchemy(app)
+app.config['JWT_SECRET_KEY'] = os.environ.get('JWT_SECRET_KEY')
+app.config['JWT_ACCESS_TOKEN_EXPIRES'] = 3600 
+
+cred = credentials.Certificate(os.environ.get('FIREBASE_SERVICE_ACCOUNT'))
+firebase_app = initialize_app(cred)
+app.db = firestore.client()
+
+CORS(app, 
+     resources={r"/*": {"origins": "*"}}, 
+     supports_credentials=True,
+     allow_headers=["Content-Type", "Authorization", "Access-Control-Allow-Origin"],
+     methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"])
 
 app.register_blueprint(rpn_bp)
 app.register_blueprint(cet_bp)
@@ -33,12 +43,21 @@ app.register_blueprint(regex_bp)
 app.register_blueprint(uc_bp)
 app.register_blueprint(feedback_bp)
 app.register_blueprint(sql_bp)
+app.register_blueprint(auth_bp)
 
-@app.route('/api', methods=['GET'])
-def api():
-    return jsonify({"message": "Welcome to the API!"}), 200
+@app.route('/', defaults={'path': ''})
+@app.route('/<path:path>')
+def serve_next_build(path):
+    if path != "" and os.path.exists(os.path.join(app.static_folder, path)):
+        return send_from_directory(app.static_folder, path)
+    else:
+        return send_from_directory(app.static_folder, 'index.html')
 
-if __name__ == '__main__':
-    app.run(debug=True, port=5050)
+@app.errorhandler(405)
+def method_not_allowed(e):
+    return {"error": "Method not allowed", "message": str(e)}, 405
+
+if __name__ == "__main__":
+    app.run(debug=True, port=5000)
 
 

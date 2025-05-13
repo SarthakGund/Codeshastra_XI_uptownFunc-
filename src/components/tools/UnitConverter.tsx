@@ -3,6 +3,8 @@
 import { useState, useEffect } from 'react';
 import { IconArrowRight, IconSwitch, IconLoader2 } from '@tabler/icons-react';
 
+const API_ENDPOINT = process.env.NEXT_PUBLIC_API_URL + '/api';
+
 type ConversionType = 'length' | 'weight' | 'temperature' | 'currency';
 
 interface ConversionOption {
@@ -106,7 +108,7 @@ const UnitConverter = () => {
 
     try {
       // Construct URL with query parameters
-      const url = new URL(`http://localhost:5050/api/convert/${activeTab}`);
+      const url = new URL(`${API_ENDPOINT}/convert/${activeTab}`);
       url.searchParams.append('value', value);
       url.searchParams.append('from', fromUnit);
       url.searchParams.append('to', toUnit);
@@ -117,10 +119,14 @@ const UnitConverter = () => {
           'Content-Type': 'application/json',
         },
         mode: 'cors',
+        credentials: 'include',
         cache: 'no-cache',
       });
 
       if (!response.ok) {
+        if (response.status === 0) {
+          throw new Error('CORS error or network failure - check server configuration');
+        }
         const errorData = await response.json();
         throw new Error(errorData.error || 'Conversion failed');
       }

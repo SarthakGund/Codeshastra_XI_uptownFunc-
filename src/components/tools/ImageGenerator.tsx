@@ -2,6 +2,8 @@
 
 import { useState, useRef } from 'react';
 import Image from 'next/image';
+import { API_ENDPOINT } from '@/config/apiConfig';
+import { imageApi } from '@/utils/api';
 
 interface TabProps {
   id: string;
@@ -82,21 +84,8 @@ export default function ImageGenerator() {
     setQrImage(null);
 
     try {
-      const response = await fetch('http://localhost:5050/api/generate-qrcode', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ text: qrText }),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || 'Failed to generate QR code');
-      }
-
-      setQrImage(data.qr_code);
+      const qrCodeData = await imageApi.generateQRCode({ text: qrText });
+      setQrImage(qrCodeData);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred');
     } finally {
@@ -115,21 +104,8 @@ export default function ImageGenerator() {
     setBarcodeImage(null);
 
     try {
-      const response = await fetch('http://localhost:5050/api/generate-barcode', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ text: barcodeText }),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || 'Failed to generate barcode');
-      }
-
-      setBarcodeImage(data.barcode);
+      const barcodeData = await imageApi.generateBarcode({ text: barcodeText });
+      setBarcodeImage(barcodeData);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred');
     } finally {
@@ -148,22 +124,11 @@ export default function ImageGenerator() {
     setConvertedImage(null);
 
     try {
-      const formData = new FormData();
-      formData.append('image', selectedFile);
-      formData.append('format', convertFormat);
-
-      const response = await fetch('http://localhost:5050/api/convert-image', {
-        method: 'POST',
-        body: formData,
+      const convertedImageData = await imageApi.convertImage({
+        image: selectedFile,
+        format: convertFormat
       });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || 'Failed to convert image');
-      }
-
-      setConvertedImage(data.converted_image);
+      setConvertedImage(convertedImageData);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred');
     } finally {

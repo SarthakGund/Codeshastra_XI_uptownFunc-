@@ -1,5 +1,4 @@
 from flask import Blueprint, request, jsonify
-from flask_cors import CORS
 import json
 import re
 import os
@@ -12,7 +11,6 @@ genai.configure(api_key=GOOGLE_API_KEY)
 model = genai.GenerativeModel('gemini-2.0-flash-thinking-exp-01-21')
 
 cfv_bp = Blueprint('code_formatters', __name__, url_prefix='/api')
-# CORS(cfv_bp)
 
 # Helper functions for formatting and validation using Gemini
 def format_with_gemini(code, language, indent_type='spaces', indent_size=4):
@@ -211,6 +209,7 @@ def validate_c(code):
 
 @cfv_bp.route('/format', methods=['POST'])
 def format_code():
+    # Handle POST request
     data = request.json
     if not data:
         return jsonify({"error": "No data provided"}), 400
@@ -250,6 +249,15 @@ def format_code():
 
 @cfv_bp.route('/validate', methods=['POST'])
 def validate_code():
+    # Handle preflight OPTIONS request
+    if request.method == 'OPTIONS':
+        response = jsonify({})
+        response.headers.add('Access-Control-Allow-Origin', '*')
+        response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization')
+        response.headers.add('Access-Control-Allow-Methods', 'POST,OPTIONS')
+        return response
+    
+    # Handle POST request
     data = request.json
     if not data:
         return jsonify({"error": "No data provided"}), 400
