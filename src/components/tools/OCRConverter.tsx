@@ -180,26 +180,24 @@ export default function OCRConverter() {
             <pre className="whitespace-pre-wrap text-sm">{extractedText}</pre>
           </div>
           
-          <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
-            <a
+          <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">            <a
               href={pdfUrl || '#'}
               download
+              onClick={(e) => !pdfUrl && e.preventDefault()}
               className={`${
-                pdfUrl ? 'bg-green-600 hover:bg-green-700' : 'bg-gray-400'
+                pdfUrl ? 'bg-green-600 hover:bg-green-700' : 'bg-gray-400 pointer-events-none'
               } flex items-center justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500`}
-              disabled={!pdfUrl}
             >
               <IconFile className="mr-2 h-5 w-5" />
               Download as PDF
             </a>
-            
-            <a
+              <a
               href={docxUrl || '#'}
               download
+              onClick={(e) => !docxUrl && e.preventDefault()}
               className={`${
-                docxUrl ? 'bg-blue-600 hover:bg-blue-700' : 'bg-gray-400'
+                docxUrl ? 'bg-blue-600 hover:bg-blue-700' : 'bg-gray-400 pointer-events-none'
               } flex items-center justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500`}
-              disabled={!docxUrl}
             >
               <IconFileText className="mr-2 h-5 w-5" />
               Download as DOCX

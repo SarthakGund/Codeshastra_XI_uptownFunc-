@@ -1,8 +1,6 @@
 'use client';
 
 import { useState, useRef } from 'react';
-import Image from 'next/image';
-import { API_ENDPOINT } from '@/config/apiConfig';
 import { imageApi } from '@/utils/api';
 
 interface TabProps {

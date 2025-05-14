@@ -1,5 +1,6 @@
 "use client";
-import { animate, motion } from "motion/react";
+// Import from framer-motion instead of motion/react as it's available in package.json
+import { motion, animate } from "framer-motion";
 import React, { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 import { GoCopilot } from "react-icons/go";
@@ -62,15 +63,31 @@ const Skeleton = () => {
         transform,
       },
       { duration: 0.8 },
-    ],
-  ];
-
+    ],  ];
+  
   useEffect(() => {
-    animate(sequence, {
-      // @ts-ignore
-      repeat: Infinity,
-      repeatDelay: 1,
-    });
+    // Using framer-motion's animate function instead of motion/react
+    const animateElements = async () => {
+      for (const item of sequence) {
+        const selector = item[0] as string;
+        const props = item[1] as Record<string, unknown>;
+        const options = item[2] as { duration?: number };
+        
+        const elements = document.querySelectorAll(selector);
+        elements.forEach(element => {
+          if (element instanceof HTMLElement) {
+            // Apply animation with framer-motion
+            animate(element, props, options);
+          }
+        });
+      }
+    };
+    
+    animateElements();
+    
+    // Set up interval for infinite animation
+    const interval = setInterval(animateElements, 5000);
+    return () => clearInterval(interval);
   }, []);
   return (
     <div className="p-8 overflow-hidden h-full relative flex items-center justify-center">

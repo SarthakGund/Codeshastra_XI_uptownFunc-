@@ -13,13 +13,10 @@ const Sidebar: React.FC<SidebarProps> = ({ companyName, logoUrl }) => {
   const [isCollapsed, setIsCollapsed] = useState(true);
   const router = useRouter();
   const pathname = usePathname(); // ✅ moved hook here
-
   const routes = [
-    { name: 'Dashborad', path: '/', icon: <Home size={20} /> },
-    { name: 'Products', path: '/tools', icon: <BarChart2 size={20} /> },
+    { name: 'Dashboard', path: '/', icon: <Home size={20} /> },
+    { name: 'Tools', path: '/tools', icon: <BarChart2 size={20} /> },
     { name: 'Pricing', path: '/pricing', icon: <DollarSign size={20} /> },
-    { name: 'Customers', path: '/customers', icon: <Users size={20} /> },
-    { name: 'Settings', path: '/settings', icon: <Settings size={20} /> },
   ];
 
   const toggleSidebar = () => {

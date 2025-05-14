@@ -1,10 +1,5 @@
 'use client'
 
-import Sidebar from "@/components/Sidebar";
-import DashboardPage from "./dashborad/page";
-import Head from 'next/head';
-import dynamic from 'next/dynamic';
-import { TextHoverEffect } from "@/components/ui/herot";
 import Link from 'next/link';
 import { SparklesPreview } from "./components/sparklespreview";
 

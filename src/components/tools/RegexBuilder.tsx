@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { IconPlus, IconTrash, IconCheck, IconX, IconRefresh, IconCopy } from '@tabler/icons-react';
+import { RegexResult } from './types';
 
 const API_ENDPOINT = process.env.NEXT_PUBLIC_API_URL+ '/api';
 
@@ -222,15 +223,15 @@ export default function RegexBuilder() {
       }
       
       const data = await response.json();
-      setResult(data);
-    } catch (error) {
+      setResult(data);    } catch (error) {
       console.error('Failed to generate regex pattern:', error);
       setResult({
         success: false,
         pattern: '',
+        flags: '',
         explanation: error instanceof Error 
           ? error.message 
-          : 'Failed to connect to backend. Please make sure the server is running on port 5050.'
+          : 'Failed to connect to backend. Please make sure the server is running on port 5000.'
       });
     } finally {
       setIsGenerating(false);
