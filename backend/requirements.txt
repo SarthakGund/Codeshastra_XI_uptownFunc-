@@ -20,3 +20,6 @@ opencv-python
 Verbalexpressions
 pyjwt
 bcrypt
+gunicorn
+waitress
+flask-mail

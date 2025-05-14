@@ -7,11 +7,26 @@ from functools import wraps
 import datetime
 import uuid
 import bcrypt
+import re
+import random
+from flask_mail import Mail, Message
 
 auth_bp = Blueprint('auth', __name__, url_prefix='/api')
 
 def initialize_firebase_db():
     return current_app.db
+
+def initialize_mail():
+    return current_app.mail
+
+# Helper function to validate email format
+def is_valid_email(email):
+    email_regex = r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$'
+    return re.match(email_regex, email) is not None
+
+# Helper function to generate OTP
+def generate_otp():
+    return random.randint(100000, 999999)
 
 # Authentication middleware with access control
 def token_required(f):
@@ -157,123 +172,190 @@ def check_access_eligibility(user_id):
     except Exception as e:
         return jsonify({'message': f'Error checking access: {str(e)}'}), 500
 
-# Add signin endpoint
 @auth_bp.route('/signin', methods=['POST'])
 def signin():
     data = request.json
-    if not data or not data.get('email') or not data.get('password'):
-        return jsonify({'message': 'Missing email or password'}), 400
+    email = data.get('email')
+    password = data.get('password')
 
-    try:
-        # Find user by email in Firestore
-        db = initialize_firebase_db()
-        users_ref = db.collection('users')
-        query = users_ref.where('email', '==', data['email']).limit(1)
-        results = query.get()
-        
-        user = None
-        for doc in results:
-            user = doc.to_dict()
-            user['uid'] = doc.id
-            break
-            
-        if not user:
-            return jsonify({'message': 'User not found'}), 404
-            
-        # Verify password
-        if not bcrypt.checkpw(data['password'].encode('utf-8'), user['password_hash']):
-            return jsonify({'message': 'Invalid password'}), 401
-            
-        # Generate JWT token
-        token = generate_jwt_token(user)
-        
-        return jsonify({
-            'uid': user['uid'],
-            'email': user['email'],
-            'token': token,
-            'plan': user.get('plan', 'free'),
-            'uses_remaining': user.get('uses_remaining')
-        })
-    
-    except Exception as e:
-        return jsonify({'message': f'Error signing in: {str(e)}'}), 500
+    if not email or not password:
+        return jsonify({'message': 'Email and password are required'}), 400
 
-# Add signup endpoint
+    db = initialize_firebase_db()
+    user_ref = db.collection('users').where('email', '==', email).limit(1).get()
+
+    if not user_ref:
+        return jsonify({'message': 'User not found'}), 404
+
+    user_data = user_ref[0].to_dict()
+
+    if not bcrypt.checkpw(password.encode('utf-8'), user_data['password'].encode('utf-8')):
+        return jsonify({'message': 'Invalid credentials'}), 401
+
+    token = generate_jwt_token({'uid': user_ref[0].id, 'email': email})
+    return jsonify({'token': token}), 200
+
 @auth_bp.route('/signup', methods=['POST'])
 def signup():
     data = request.json
-    if not data or not data.get('email') or not data.get('password'):
-        return jsonify({'message': 'Missing email or password'}), 400
+    email = data.get('email')
+    password = data.get('password')
 
-    try:
-        db = initialize_firebase_db()
-        users_ref = db.collection('users')
-        query = users_ref.where('email', '==', data['email']).limit(1)
-        results = query.get()
-        
-        if len(list(results)):
-            return jsonify({'message': 'Email already in use'}), 400
-            
-        # Create user ID
-        user_id = str(uuid.uuid4())
-        
-        # Hash the password
-        password_hash = bcrypt.hashpw(data['password'].encode('utf-8'), bcrypt.gensalt())
-        
-        # Create user in Firestore with uses_remaining
-        user_ref = users_ref.document(user_id)
-        user_data = {
-            'email': data['email'],
-            'password_hash': password_hash,
-            'plan': 'free',
-            'uses_remaining': 30,  # Updated: 30 uses for free users
-            'created_at': firestore.SERVER_TIMESTAMP
-        }
-        user_ref.set(user_data)
-        
-        user = {
-            'uid': user_id,
-            'email': data['email']
-        }
-        
-        token = generate_jwt_token(user)
-        
-        return jsonify({
-            'uid': user_id,
-            'email': data['email'],
-            'token': token,
-            'plan': 'free',
-            'uses_remaining': 30,  # Updated: Also return 30 here
-            'message': 'User created successfully'
-        }), 201
+    if not email or not password:
+        return jsonify({'message': 'Email and password are required'}), 400
+
+    if not is_valid_email(email):
+        return jsonify({'message': 'Invalid email format'}), 400
+
+    db = initialize_firebase_db()
+    pending_ref = db.collection('pending_signups').where('email', '==', email).limit(1).get()
+
+    if pending_ref:
+        return jsonify({'message': 'A pending sign-up already exists for this email. Please verify your OTP.'}), 400
+
+    users_ref = db.collection('users').where('email', '==', email).limit(1).get()
+
+    if users_ref:
+        return jsonify({'message': 'Email already exists'}), 400
+
+    hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
+    otp = generate_otp()
+    timestamp = datetime.datetime.utcnow()
+
+    db.collection('pending_signups').add({
+        'email': email,
+        'password': hashed_password,
+        'otp': otp,
+        'created_at': timestamp
+    })
+
+    mail = initialize_mail()
+    msg = Message('Your OTP Code', sender='noreply@example.com', recipients=[email])
+    msg.body = f'Your OTP code is {otp}'
+    mail.send(msg)
+
+    return jsonify({'message': 'Sign-up initiated. Please verify OTP sent to your email.'}), 201
+
+@auth_bp.route('/verify-otp', methods=['POST'])
+def verify_otp():
+    data = request.json
+    email = data.get('email')
+    otp = data.get('otp')
+    type = data.get('type', 'signup')  # Add type parameter to distinguish between signup and reset_password
     
-    except Exception as e:
-        return jsonify({'message': f'Error creating user: {str(e)}'}), 500
+    if not email or not otp:
+        return jsonify({'message': 'Email and OTP are required'}), 400
+
+    db = initialize_firebase_db()
+    
+    if type == 'signup':
+        pending_ref = db.collection('pending_signups').where('email', '==', email).limit(1).get()
+
+        if not pending_ref:
+            return jsonify({'message': 'No pending sign-up found for this email'}), 404
+
+        pending_data = pending_ref[0].to_dict()
+
+        if pending_data['otp'] != int(otp):
+            return jsonify({'message': 'Invalid OTP'}), 400
+
+        # Create the user in the main users collection
+        new_user_ref = db.collection('users').add({
+            'email': pending_data['email'],
+            'password': pending_data['password'],
+            'created_at': datetime.datetime.utcnow(),
+            'plan': 'free',
+            'uses_remaining': 5  # Default free tier uses
+        })
+
+        # Fix: Correctly extract document ID from the DocumentReference
+        new_user_id = new_user_ref[1].id
+
+        # Delete from pending signups
+        db.collection('pending_signups').document(pending_ref[0].id).delete()
+
+        # Generate JWT token for automatic sign-in
+        token = generate_jwt_token({'uid': new_user_id, 'email': email})
+
+        return jsonify({
+            'message': 'OTP verified successfully. Account created.',
+            'token': token
+        }), 200
+    else:
+        # Existing password reset logic
+        user_ref = db.collection('users').where('email', '==', email).limit(1).get()
+        
+        if not user_ref:
+            return jsonify({'message': 'User not found'}), 404
+            
+        user_data = user_ref[0].to_dict()
+        
+        if user_data.get('otp') != int(otp):
+            return jsonify({'message': 'Invalid OTP'}), 400
+            
+        # Process password reset if new_password is provided
+        new_password = data.get('new_password')
+        if new_password:
+            hashed_password = bcrypt.hashpw(new_password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
+            db.collection('users').document(user_ref[0].id).update({'password': hashed_password, 'otp': None})
+        
+        return jsonify({'message': 'OTP verified successfully'}), 200
 
 @auth_bp.route('/signout', methods=['POST'])
+@token_required
 def signout():
-    # JWT is stateless, so we don't need to do anything on the server for sign out
-    # Don't require token validation for signout to avoid errors
-    auth_header = request.headers.get('Authorization')
-    
-    if auth_header:
-        try:
-            # Extract token from "Bearer <token>"
-            token = auth_header.split(' ')[1]
-            # Verify the token
-            decoded_token = jwt.decode(
-                token, 
-                current_app.config['JWT_SECRET_KEY'],
-                algorithms=['HS256']
-            )
-            # Could log the user signout event here
-            user_id = decoded_token['uid']
-            # Log signout to database if needed
-        except:
-            # Ignore token validation errors for signout
-            pass
-    
-    return jsonify({'message': 'Successfully signed out'})
+    # Invalidate token logic (if implemented, e.g., token blacklist)
+    return jsonify({'message': 'Signed out successfully'}), 200
+
+@auth_bp.route('/reset-password', methods=['POST'])
+def reset_password():
+    data = request.json
+    email = data.get('email')
+
+    if not email:
+        return jsonify({'message': 'Email is required'}), 400
+
+    db = initialize_firebase_db()
+    user_ref = db.collection('users').where('email', '==', email).limit(1).get()
+
+    if not user_ref:
+        return jsonify({'message': 'User not found'}), 404
+
+    otp = generate_otp()
+    db.collection('users').document(user_ref[0].id).update({'otp': otp})
+
+    mail = initialize_mail()
+    msg = Message('Password Reset OTP', sender='noreply@example.com', recipients=[email])
+    msg.body = f'Your password reset OTP is {otp}'
+    mail.send(msg)
+
+    return jsonify({'message': 'OTP sent to your email for password reset'}), 200
+
+@auth_bp.route('/verify-reset-otp', methods=['POST'])
+def verify_reset_otp():
+    data = request.json
+    email = data.get('email')
+    otp = data.get('otp')
+    new_password = data.get('new_password')
+
+    if not email or not otp or not new_password:
+        return jsonify({'message': 'Email, OTP, and new password are required'}), 400
+
+    db = initialize_firebase_db()
+    user_ref = db.collection('users').where('email', '==', email).limit(1).get()
+
+    if not user_ref:
+        return jsonify({'message': 'User not found'}), 404
+
+    user_data = user_ref[0].to_dict()
+
+    if user_data['otp'] != int(otp):
+        return jsonify({'message': 'Invalid OTP'}), 400
+
+    hashed_password = bcrypt.hashpw(new_password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
+    db.collection('users').document(user_ref[0].id).update({'password': hashed_password, 'otp': None})
+
+    return jsonify({'message': 'Password reset successfully'}), 200
 
 @auth_bp.route('/user-profile', methods=['GET'])
 @token_required

@@ -19,15 +19,12 @@ export default function AuthGuard({
   const [showAuthError, setShowAuthError] = useState(false);
 
   useEffect(() => {
-    // Add a small delay before redirecting to avoid immediate flashes
     let redirectTimer: NodeJS.Timeout;
     
     if (!isLoading) {
       if (requireAuth && !isAuthenticated) {
-        // Show auth error message briefly before redirecting
         setShowAuthError(true);
         
-        // Redirect to login after showing the message
         redirectTimer = setTimeout(() => {
           router.push('/signin');
         }, 1500);
@@ -63,7 +60,6 @@ export default function AuthGuard({
         </div>
       );
     }
-    // Return null to prevent flash of content before redirect
     return null;
   }
 

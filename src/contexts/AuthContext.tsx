@@ -19,11 +19,16 @@ interface User {
 interface AuthContextType {
   user: User | null;
   isLoading: boolean;
-  signIn: (email: string, password: string) => Promise<void>;
+  signIn: (
+    email: string,
+    password: string
+  ) => Promise<{ token: string; uid: string; email: string; plan?: string; isOtpRequired?: boolean }>;
   signUp: (email: string, password: string) => Promise<void>;
   signOut: () => Promise<void>;
   isAuthenticated: boolean;
   refreshUserData: () => Promise<void>;
+  verifyOtp: (email: string, otp: string) => Promise<void>;
+  isOtpRequired: boolean;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -32,18 +37,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+  const [isOtpRequired, setIsOtpRequired] = useState<boolean>(false);
   const router = useRouter();
 
   useEffect(() => {
     const checkAuthStatus = async () => {
-      setIsLoading(true);
-
       try {
-        // Check if we have a token
         const token = localStorage.getItem("authToken");
 
         if (token) {
-          // Get user profile with the token
           const userData = await authApi.getUserProfile();
 
           setUser({
@@ -55,9 +57,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         }
       } catch (error) {
         console.error("Auth check failed:", error);
-        localStorage.removeItem("authToken");
+        localStorage.removeItem("authToken"); // Clear invalid token
         setUser(null);
-        setIsAuthenticated(false);
       } finally {
         setIsLoading(false);
       }
@@ -68,19 +69,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const signIn = async (email: string, password: string) => {
     try {
-      setIsLoading(true);
       const response = await authApi.signIn({ email, password });
-
+      localStorage.setItem("authToken", response.token); // Store token in localStorage
       setUser({
         uid: response.uid,
         email: response.email,
-        plan: response.plan,
+        plan: response.plan || "free",
       });
       setIsAuthenticated(true);
+      return response; // Return the response to include isOtpRequired
     } catch (error) {
+      console.error("Sign-in failed:", error);
       throw error;
-    } finally {
-      setIsLoading(false);
     }
   };
 
@@ -103,12 +103,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const signOut = async () => {
-    setIsLoading(true);
     try {
       await authApi.signOut();
     } catch (error) {
-      console.error("Error during sign out:", error);
+      console.warn("Sign-out failed, but clearing local data:", error);
     } finally {
+      localStorage.removeItem("authToken"); // Clear token from localStorage
       setUser(null);
       setIsAuthenticated(false);
       setIsLoading(false);
@@ -145,6 +145,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
+  const verifyOtp = async (email: string, otp: string) => {
+    try {
+      const response = await authApi.verifyOtp(email, otp, "signup");
+      if (response.success) {
+        setIsAuthenticated(true);
+        await refreshUserData();
+      }
+    } catch (error) {
+      console.error("OTP verification failed:", error);
+      throw error;
+    }
+  };
+
   const value = {
     user,
     isLoading,
@@ -153,6 +166,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     signOut,
     isAuthenticated,
     refreshUserData,
+    verifyOtp,
+    isOtpRequired,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

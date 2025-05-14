@@ -64,9 +64,46 @@ async function apiRequest(endpoint: string, method: string = 'GET', data?: any, 
   }
 }
 
+// Authentication OTP and Password Reset APIs
+export const sendResetOtp = async (email: string) => {
+  return await apiRequest("reset-password", "POST", { email }, false);
+};
+
+export const verifyOtp = async (email: string, otp: string, type: "signup" | "reset_password") => {
+  const response = await apiRequest("verify-otp", "POST", {
+    email,
+    otp,
+    type,
+  }, false);
+  
+  // If this is a signup verification and we got a token back, store it
+  if (type === "signup" && response.token) {
+    localStorage.setItem('authToken', response.token);
+  }
+  
+  return response;
+};
+
+export const resetPassword = async (email: string, otp: string, newPassword: string, type: "signup" | "reset_password") => {
+  return await apiRequest("reset-password", "POST", {
+    email,
+    otp,
+    new_password: newPassword,
+    type,
+  }, false);
+};
+
+export const verifySignupOtp = async (email: string, otp: string) => {
+  return await apiRequest("verify-signup-otp", "POST", { email, otp }, false);
+};
+
+export const verifyResetOtp = async (email: string, otp: string, newPassword: string) => {
+  return await apiRequest("verify-reset-otp", "POST", { email, otp, new_password: newPassword }, false);
+};
+
 // Authentication APIs
 export const authApi = {
-  // Going back to Firebase-based authentication
+  // Firebase-based authentication
   signIn: (data: { email: string; password: string }) => {
     return apiRequest('signin', 'POST', data, false)
       .then(response => {
@@ -78,13 +115,8 @@ export const authApi = {
   },
     
   signUp: (data: { email: string; password: string }) => {
-    return apiRequest('signup', 'POST', data, false)
-      .then(response => {
-        if (response.token) {
-          localStorage.setItem('authToken', response.token);
-        }
-        return response;
-      });
+    // Just initiate signup with email/password - returns OTP sent response
+    return apiRequest('signup', 'POST', data, false);
   },
     
   signOut: async () => {
@@ -118,7 +150,14 @@ export const authApi = {
   
   getUserProfile: async () => {
     return await apiRequest('user-profile', 'GET');
-  }
+  },
+
+  verifyOtp: async (email: string, otp: string, type: 'signup' | 'reset_password') => {
+    return await apiRequest('verify-otp', 'POST', { email, otp, type }, false);
+  },
+
+  sendResetOtp,
+  resetPassword
 };
 
 // User plan and subscription APIs

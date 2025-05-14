@@ -3,6 +3,7 @@ from flask_cors import CORS
 import os
 from firebase_admin import credentials, initialize_app, firestore
 from dotenv import load_dotenv
+from flask_mail import Mail
 from routes.RandomPassNo_route import rpn_bp
 from routes.CsvExcelTools_route import cet_bp
 from routes.ImageGen_route import ig_bp
@@ -21,10 +22,18 @@ load_dotenv()
 
 app.config['JWT_SECRET_KEY'] = os.environ.get('JWT_SECRET_KEY')
 app.config['JWT_ACCESS_TOKEN_EXPIRES'] = 3600 
+app.config['MAIL_SERVER'] = os.environ.get('MAIL_SERVER')
+app.config['MAIL_PORT'] = os.environ.get('MAIL_PORT')
+app.config['MAIL_USE_TLS'] = os.environ.get('MAIL_USE_TLS')
+app.config['MAIL_USERNAME'] = os.environ.get('MAIL_USERNAME')
+app.config['MAIL_PASSWORD'] = os.environ.get('MAIL_PASSWORD')
+app.config['MAIL_AUTHENTICATE'] = os.environ.get('MAIL_AUTHENTICATE')
 
 cred = credentials.Certificate(os.environ.get('FIREBASE_SERVICE_ACCOUNT'))
 firebase_app = initialize_app(cred)
 app.db = firestore.client()
+
+app.mail = Mail(app)
 
 CORS(app, 
      resources={r"/*": {"origins": "*"}}, 
